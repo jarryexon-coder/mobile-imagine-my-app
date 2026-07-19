@@ -3,41 +3,56 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
+  ScrollView,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-// Mock data for admin dashboard
-const mockConsultations = [
-  { id: 1, name: 'John Doe', email: 'john@example.com', message: 'I need a fitness app', status: 'pending', created_at: '2024-01-15' },
-  { id: 2, name: 'Jane Smith', email: 'jane@example.com', message: 'Looking for e-commerce solution', status: 'pending', created_at: '2024-01-14' },
-  { id: 3, name: 'Bob Johnson', email: 'bob@example.com', message: 'AI-powered analytics platform', status: 'contacted', created_at: '2024-01-13' },
-];
+// YOUR WORKING API URL
+const API_URL = 'https://imagine-mobile-production.up.railway.app/api/consultations';
+const ADMIN_TOKEN = 'TRVcKCwVCRHKUpk8asfmqAufYpR0wICcKzk0pEMuTW4=';
 
 export default function AdminScreen() {
   const [consultations, setConsultations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filter, setFilter] = useState('all');
+  const [error, setError] = useState(null);
+
+  const loadConsultations = async () => {
+    try {
+      console.log('📡 Fetching consultations...');
+      const response = await fetch(API_URL, {
+        headers: {
+          'Authorization': `Bearer ${ADMIN_TOKEN}`,
+        },
+      });
+
+      const data = await response.json();
+      console.log('📡 Data received:', data);
+      
+      if (data.success) {
+        setConsultations(data.data || []);
+        setError(null);
+      } else {
+        setError('Failed to load consultations');
+      }
+    } catch (err) {
+      console.error('❌ Error:', err);
+      setError('Network error: ' + err.message);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     loadConsultations();
   }, []);
 
-  const loadConsultations = async () => {
-    // In production, fetch from your API
-    // For now, use mock data
-    setTimeout(() => {
-      setConsultations(mockConsultations);
-      setLoading(false);
-      setRefreshing(false);
-    }, 1000);
-  };
-
-  const handleRefresh = () => {
+  const onRefresh = () => {
     setRefreshing(true);
     loadConsultations();
   };
@@ -51,98 +66,66 @@ export default function AdminScreen() {
     }
   };
 
-  const filteredConsultations = filter === 'all' 
-    ? consultations 
-    : consultations.filter(c => c.status === filter);
-
-  const stats = {
-    total: consultations.length,
-    pending: consultations.filter(c => c.status === 'pending').length,
-    contacted: consultations.filter(c => c.status === 'contacted').length,
-    completed: consultations.filter(c => c.status === 'completed').length,
-  };
-
   if (loading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#4F46E5" />
+        <Text style={styles.loadingText}>Loading consultations...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Ionicons name="alert-circle" size={48} color="#dc3545" />
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={loadConsultations}>
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.statsContainer}>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{stats.total}</Text>
-          <Text style={styles.statLabel}>Total</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{stats.pending}</Text>
-          <Text style={styles.statLabel}>Pending</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{stats.contacted}</Text>
-          <Text style={styles.statLabel}>Contacted</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{stats.completed}</Text>
-          <Text style={styles.statLabel}>Completed</Text>
-        </View>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Admin Dashboard</Text>
+        <Text style={styles.headerSubtitle}>
+          {consultations.length} Total Consultations
+        </Text>
       </View>
 
-      <View style={styles.filterContainer}>
-        <TouchableOpacity
-          style={[styles.filterButton, filter === 'all' && styles.filterActive]}
-          onPress={() => setFilter('all')}
-        >
-          <Text style={[styles.filterText, filter === 'all' && styles.filterActiveText]}>All</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filterButton, filter === 'pending' && styles.filterActive]}
-          onPress={() => setFilter('pending')}
-        >
-          <Text style={[styles.filterText, filter === 'pending' && styles.filterActiveText]}>Pending</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filterButton, filter === 'contacted' && styles.filterActive]}
-          onPress={() => setFilter('contacted')}
-        >
-          <Text style={[styles.filterText, filter === 'contacted' && styles.filterActiveText]}>Contacted</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filterButton, filter === 'completed' && styles.filterActive]}
-          onPress={() => setFilter('completed')}
-        >
-          <Text style={[styles.filterText, filter === 'completed' && styles.filterActiveText]}>Completed</Text>
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        data={filteredConsultations}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardName}>{item.name}</Text>
-              <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-                <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
-              </View>
-            </View>
-            <Text style={styles.cardEmail}>{item.email}</Text>
-            <Text style={styles.cardMessage} numberOfLines={2}>{item.message}</Text>
-            <Text style={styles.cardDate}>{item.created_at}</Text>
-          </View>
-        )}
+      <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        ListEmptyComponent={
+        contentContainerStyle={styles.scrollContent}
+      >
+        {consultations.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No consultations found</Text>
+            <Ionicons name="inbox" size={48} color="#ccc" />
+            <Text style={styles.emptyText}>No consultations yet</Text>
           </View>
-        }
-      />
+        ) : (
+          consultations.map((item) => (
+            <View key={item.id} style={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardName}>{item.name}</Text>
+                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
+                  <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
+                </View>
+              </View>
+              <Text style={styles.cardEmail}>{item.email}</Text>
+              {item.phone && <Text style={styles.cardPhone}>{item.phone}</Text>}
+              <Text style={styles.cardMessage} numberOfLines={2}>{item.message}</Text>
+              <Text style={styles.cardDate}>
+                {new Date(item.created_at).toLocaleDateString()}
+              </Text>
+            </View>
+          ))
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -156,65 +139,57 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
-  statsContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    justifyContent: 'space-between',
-  },
-  statCard: {
-    backgroundColor: 'white',
-    padding: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-  },
-  statLabel: {
-    fontSize: 12,
+  loadingText: {
+    marginTop: 10,
     color: '#666',
-    marginTop: 2,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    marginBottom: 12,
-    gap: 8,
-  },
-  filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-  },
-  filterActive: {
-    backgroundColor: '#4F46E5',
-  },
-  filterText: {
     fontSize: 14,
-    color: '#666',
   },
-  filterActiveText: {
+  errorText: {
+    marginTop: 10,
+    color: '#dc3545',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  retryButton: {
+    marginTop: 20,
+    backgroundColor: '#4F46E5',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
     color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 30,
+  },
+  header: {
+    backgroundColor: '#4F46E5',
+    padding: 20,
+    paddingTop: 40,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: 4,
   },
   card: {
     backgroundColor: 'white',
     padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 10,
     borderRadius: 12,
+    marginBottom: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
@@ -223,12 +198,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   cardName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1a1a1a',
   },
   statusBadge: {
     paddingHorizontal: 10,
@@ -245,21 +219,28 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 4,
   },
+  cardPhone: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
   cardMessage: {
     fontSize: 14,
     color: '#333',
     marginBottom: 8,
+    lineHeight: 20,
   },
   cardDate: {
     fontSize: 12,
     color: '#999',
   },
   emptyState: {
-    padding: 40,
     alignItems: 'center',
+    padding: 40,
   },
   emptyText: {
-    color: '#666',
+    marginTop: 10,
+    color: '#999',
     fontSize: 16,
   },
 });

@@ -9,15 +9,19 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const API_URL = 'https://imaginemyapps.com/api/contact';
+// YOUR WORKING API URL
+const API_URL = 'https://imagine-mobile-production.up.railway.app/api/contact';
 
 export default function ConsultationScreen({ navigation }) {
   const [form, setForm] = useState({ 
     name: '', 
     email: '', 
     phone: '', 
-    message: '' 
+    service: '',
+    message: '',
+    timeframe: '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +42,9 @@ export default function ConsultationScreen({ navigation }) {
           name: form.name,
           email: form.email,
           phone: form.phone || '',
+          service: form.service || '',
           message: form.message,
+          timeframe: form.timeframe || '',
         }),
       });
 
@@ -52,6 +58,7 @@ export default function ConsultationScreen({ navigation }) {
       }
     } catch (error) {
       Alert.alert('Error', 'Network error. Please try again.');
+      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
@@ -97,6 +104,16 @@ export default function ConsultationScreen({ navigation }) {
         </View>
 
         <View style={styles.formGroup}>
+          <Text style={styles.label}>Service Type</Text>
+          <TextInput 
+            style={styles.input} 
+            value={form.service} 
+            onChangeText={(t) => setForm({...form, service: t})} 
+            placeholder="Mobile, Web, Backend, etc." 
+          />
+        </View>
+
+        <View style={styles.formGroup}>
           <Text style={styles.label}>Your App Idea *</Text>
           <TextInput 
             style={[styles.input, styles.textArea]} 
@@ -109,6 +126,16 @@ export default function ConsultationScreen({ navigation }) {
           />
         </View>
 
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Timeline</Text>
+          <TextInput 
+            style={styles.input} 
+            value={form.timeframe} 
+            onChangeText={(t) => setForm({...form, timeframe: t})} 
+            placeholder="When do you need it?" 
+          />
+        </View>
+
         <TouchableOpacity 
           style={styles.submitButton} 
           onPress={handleSubmit} 
@@ -117,7 +144,7 @@ export default function ConsultationScreen({ navigation }) {
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text style={styles.submitText}>Submit →</Text>
+            <Text style={styles.submitText}>Get Free Consultation →</Text>
           )}
         </TouchableOpacity>
       </View>

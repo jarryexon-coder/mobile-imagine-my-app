@@ -11,10 +11,12 @@ import ConsultationScreen from './src/screens/ConsultationScreen';
 import CaseStudyScreen from './src/screens/CaseStudyScreen';
 import ThankYouScreen from './src/screens/ThankYouScreen';
 import AdminScreen from './src/screens/AdminScreen';
+import CaseStudiesScreen from './src/screens/CaseStudiesScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+// Portfolio Stack (handles CaseStudy navigation from Portfolio)
 function PortfolioStack() {
   return (
     <Stack.Navigator
@@ -30,6 +32,23 @@ function PortfolioStack() {
   );
 }
 
+// Case Studies Stack (handles CaseStudy navigation from CaseStudies tab)
+function CaseStudiesStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: '#4F46E5' },
+        headerTintColor: '#fff',
+        headerTitleStyle: { fontWeight: 'bold' },
+      }}
+    >
+      <Stack.Screen name="CaseStudiesList" component={CaseStudiesScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="CaseStudy" component={CaseStudyScreen} options={{ title: 'Case Study' }} />
+    </Stack.Navigator>
+  );
+}
+
+// Consultation Stack
 function ConsultationStack() {
   return (
     <Stack.Navigator
@@ -45,35 +64,54 @@ function ConsultationStack() {
   );
 }
 
+// Main Tab Navigator
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          const icons = {
+            Home: focused ? 'home' : 'home-outline',
+            Portfolio: focused ? 'folder' : 'folder-outline',
+            CaseStudies: focused ? 'book' : 'book-outline',
+            Consultation: focused ? 'chatbubble' : 'chatbubble-outline',
+          };
+          return <Ionicons name={icons[route.name]} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#4F46E5',
+        tabBarInactiveTintColor: 'gray',
+        headerStyle: { backgroundColor: '#4F46E5' },
+        headerTintColor: '#fff',
+        headerTitleStyle: { fontWeight: 'bold' },
+        tabBarStyle: {
+          paddingBottom: 5,
+          height: 60,
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'ImagineMyApps' }} />
+      <Tab.Screen name="Portfolio" component={PortfolioStack} options={{ title: 'Portfolio', headerShown: false }} />
+      <Tab.Screen name="CaseStudies" component={CaseStudiesStack} options={{ title: 'Case Studies', headerShown: false }} />
+      <Tab.Screen name="Consultation" component={ConsultationStack} options={{ title: 'Consultation', headerShown: false }} />
+    </Tab.Navigator>
+  );
+}
+
+// Main App
 export default function App() {
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            const icons = {
-              Home: focused ? 'home' : 'home-outline',
-              Portfolio: focused ? 'folder' : 'folder-outline',
-              Consultation: focused ? 'chatbubble' : 'chatbubble-outline',
-            };
-            return <Ionicons name={icons[route.name]} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#4F46E5',
-          tabBarInactiveTintColor: 'gray',
+      <Stack.Navigator
+        screenOptions={{
           headerStyle: { backgroundColor: '#4F46E5' },
           headerTintColor: '#fff',
           headerTitleStyle: { fontWeight: 'bold' },
-          tabBarStyle: {
-            paddingBottom: 5,
-            height: 60,
-          },
-        })}
+        }}
       >
-        <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'ImagineMyApps' }} />
-        <Tab.Screen name="Portfolio" component={PortfolioStack} options={{ title: 'Portfolio', headerShown: false }} />
-        <Tab.Screen name="Consultation" component={ConsultationStack} options={{ title: 'Consultation', headerShown: false }} />
-      </Tab.Navigator>
+        <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="Admin" component={AdminScreen} options={{ title: 'Admin Dashboard' }} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
