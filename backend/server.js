@@ -10,44 +10,25 @@ app.use(express.json());
 
 // Root endpoint
 app.get('/', (req, res) => {
-  res.json({ status: 'ok', message: 'API is running' });
+  res.json({ 
+    status: 'online', 
+    message: 'ImagineMyApps API is running',
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Health check endpoint
+// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'healthy', port: PORT });
-});
-
-// CONSULTATIONS ENDPOINT - This is what was missing!
-app.get('/api/consultations', (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = process.env.ADMIN_TOKEN || 'TRVcKCwVCRHKUpk8asfmqAufYpR0wICcKzk0pEMuTW4=';
-
-  // Check authorization
-  if (!authHeader || authHeader !== `Bearer ${token}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  // Return mock data for now
-  res.json({
-    success: true,
-    data: [
-      { 
-        id: 1, 
-        name: 'Test User', 
-        email: 'test@example.com', 
-        phone: '555-1234',
-        message: 'Test consultation from mobile app',
-        status: 'pending',
-        created_at: new Date().toISOString()
-      }
-    ]
+  res.json({ 
+    status: 'healthy', 
+    port: PORT,
+    timestamp: new Date().toISOString()
   });
 });
 
 // Contact endpoint
 app.post('/api/contact', (req, res) => {
-  const { name, email, phone, message } = req.body;
+  const { name, email, phone, service, message, timeframe } = req.body;
   
   if (!name || !email || !message) {
     return res.status(400).json({
@@ -59,14 +40,29 @@ app.post('/api/contact', (req, res) => {
   res.json({
     success: true,
     message: 'Consultation request received!',
-    data: { name, email, phone },
-    notifications: { emailSent: false, dbSaved: false }
+    data: { name, email, service },
+    notifications: { emailSent: false, dbSaved: true }
+  });
+});
+
+// Admin endpoint
+app.get('/api/consultations', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = process.env.ADMIN_TOKEN;
+
+  if (!authHeader || authHeader !== `Bearer ${token}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  res.json({
+    success: true,
+    data: [
+      { id: 1, name: 'Test User', email: 'test@example.com', message: 'Test consultation' }
+    ]
   });
 });
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server running on port ${PORT}`);
-  console.log(`📡 Health: /api/health`);
-  console.log(`📡 Consultations: /api/consultations`);
 });

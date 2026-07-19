@@ -1,0 +1,53 @@
+# Expo
+.expo/
+.expo-shared/
+dist/
+node_modules/
+npm-debug.*
+*.log
+*.orig
+*.swp
+*.swo
+*.tgz
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Build
+*.aab
+*.apk
+*.ipa
+*.keystore
+*.p12
+*.mobileprovision
+*.provisionprofile
+
+# Git
+.git/
+.gitignore
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Large images (if any)
+*.psd
+*.ai
+*.raw
+
+# Documentation
+docs/
+*.md
+LICENSE
+AGENTS.md
+CLAUDE.md
+
+# Mobile app source
+src/screens/
+
+# Assets (large images)
+assets/

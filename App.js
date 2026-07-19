@@ -16,13 +16,24 @@ import CaseStudiesScreen from './src/screens/CaseStudiesScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-// Portfolio Stack (handles CaseStudy navigation from Portfolio)
+// Colors
+const COLORS = {
+  primary: '#1a2332',      // Navy Blue
+  secondary: '#d4a853',    // Gold
+  background: '#f8f9fa',   // Light Gray
+  textPrimary: '#111827',  // Dark Navy
+  textSecondary: '#4b5563', // Slate
+  card: '#ffffff',         // White
+  accent: '#c9a84c',       // Gold Accent
+};
+
+// Portfolio Stack
 function PortfolioStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: '#4F46E5' },
-        headerTintColor: '#fff',
+        headerStyle: { backgroundColor: COLORS.primary },
+        headerTintColor: '#ffffff',
         headerTitleStyle: { fontWeight: 'bold' },
       }}
     >
@@ -32,13 +43,13 @@ function PortfolioStack() {
   );
 }
 
-// Case Studies Stack (handles CaseStudy navigation from CaseStudies tab)
+// Case Studies Stack
 function CaseStudiesStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: '#4F46E5' },
-        headerTintColor: '#fff',
+        headerStyle: { backgroundColor: COLORS.primary },
+        headerTintColor: '#ffffff',
         headerTitleStyle: { fontWeight: 'bold' },
       }}
     >
@@ -53,8 +64,8 @@ function ConsultationStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: '#4F46E5' },
-        headerTintColor: '#fff',
+        headerStyle: { backgroundColor: COLORS.primary },
+        headerTintColor: '#ffffff',
         headerTitleStyle: { fontWeight: 'bold' },
       }}
     >
@@ -78,14 +89,17 @@ function MainTabs() {
           };
           return <Ionicons name={icons[route.name]} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#4F46E5',
-        tabBarInactiveTintColor: 'gray',
-        headerStyle: { backgroundColor: '#4F46E5' },
-        headerTintColor: '#fff',
+        tabBarActiveTintColor: COLORS.secondary,
+        tabBarInactiveTintColor: '#94a3b8',
+        headerStyle: { backgroundColor: COLORS.primary },
+        headerTintColor: '#ffffff',
         headerTitleStyle: { fontWeight: 'bold' },
         tabBarStyle: {
           paddingBottom: 5,
           height: 60,
+          backgroundColor: COLORS.primary,
+          borderTopColor: COLORS.secondary,
+          borderTopWidth: 1,
         },
       })}
     >
@@ -101,11 +115,11 @@ function MainTabs() {
 export default function App() {
   return (
     <NavigationContainer>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: '#4F46E5' },
-          headerTintColor: '#fff',
+          headerStyle: { backgroundColor: COLORS.primary },
+          headerTintColor: '#ffffff',
           headerTitleStyle: { fontWeight: 'bold' },
         }}
       >

@@ -31,6 +31,22 @@ const projects = [
   },
   {
     id: 2,
+    name: 'Creator API Hub',
+    description: 'API aggregation platform.',
+    tech: ['Node.js', 'Express'],
+    coverImage: images.creatorhub,
+    isFeatured: false
+  },
+  { 
+    id: 3,
+    name: 'Nexus AI',
+    description: 'Intelligent personal assistant.',
+    tech: ['Python', 'TensorFlow'],
+    coverImage: images.nexus,
+    isFeatured: false
+  },
+  {
+    id: 4,
     name: 'UrbanMart',
     description: 'E-commerce platform with payment integration.',
     tech: ['Next.js', 'Stripe'],
@@ -38,27 +54,11 @@ const projects = [
     isFeatured: false
   },
   {
-    id: 3,
+    id: 5,
     name: 'DataDash',
     description: 'Business intelligence dashboard.',
     tech: ['Vue.js', 'Firebase'],
     coverImage: images.datadash,
-    isFeatured: false
-  },
-  {
-    id: 4,
-    name: 'Creator API Hub',
-    description: 'API aggregation platform.',
-    tech: ['Node.js', 'Express'],
-    coverImage: images.creatorhub,
-    isFeatured: false
-  },
-  {
-    id: 5,
-    name: 'Nexus AI',
-    description: 'Intelligent personal assistant.',
-    tech: ['Python', 'TensorFlow'],
-    coverImage: images.nexus,
     isFeatured: false
   },
   {

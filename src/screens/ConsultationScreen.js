@@ -8,22 +8,31 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-// YOUR WORKING API URL
 const API_URL = 'https://imagine-mobile-production.up.railway.app/api/contact';
 
 export default function ConsultationScreen({ navigation }) {
-  const [form, setForm] = useState({ 
-    name: '', 
-    email: '', 
-    phone: '', 
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
     service: '',
     message: '',
-    timeframe: '',
+    timeframe: 'Less than 1 month',
   });
   const [loading, setLoading] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const timeframeOptions = [
+    'Less than 1 month',
+    '1-3 months',
+    '3-6 months',
+    'Near Future',
+  ];
 
   const handleSubmit = async () => {
     if (!form.name || !form.email || !form.message) {
@@ -44,12 +53,12 @@ export default function ConsultationScreen({ navigation }) {
           phone: form.phone || '',
           service: form.service || '',
           message: form.message,
-          timeframe: form.timeframe || '',
+          timeframe: form.timeframe,
         }),
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         Alert.alert('Success', 'Consultation request received!');
         navigation.navigate('ThankYou');
@@ -64,6 +73,11 @@ export default function ConsultationScreen({ navigation }) {
     }
   };
 
+  const selectTimeframe = (option) => {
+    setForm({ ...form, timeframe: option });
+    setDropdownVisible(false);
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.card}>
@@ -72,73 +86,75 @@ export default function ConsultationScreen({ navigation }) {
 
         <View style={styles.formGroup}>
           <Text style={styles.label}>Full Name *</Text>
-          <TextInput 
-            style={styles.input} 
-            value={form.name} 
-            onChangeText={(t) => setForm({...form, name: t})} 
-            placeholder="Your name" 
+          <TextInput
+            style={styles.input}
+            value={form.name}
+            onChangeText={(t) => setForm({ ...form, name: t })}
+            placeholder="Your name"
           />
         </View>
 
         <View style={styles.formGroup}>
           <Text style={styles.label}>Email *</Text>
-          <TextInput 
-            style={styles.input} 
-            value={form.email} 
-            onChangeText={(t) => setForm({...form, email: t})} 
-            placeholder="your@email.com" 
-            keyboardType="email-address" 
+          <TextInput
+            style={styles.input}
+            value={form.email}
+            onChangeText={(t) => setForm({ ...form, email: t })}
+            placeholder="your@email.com"
+            keyboardType="email-address"
             autoCapitalize="none"
           />
         </View>
 
         <View style={styles.formGroup}>
           <Text style={styles.label}>Phone</Text>
-          <TextInput 
-            style={styles.input} 
-            value={form.phone} 
-            onChangeText={(t) => setForm({...form, phone: t})} 
-            placeholder="Your phone number" 
-            keyboardType="phone-pad" 
+          <TextInput
+            style={styles.input}
+            value={form.phone}
+            onChangeText={(t) => setForm({ ...form, phone: t })}
+            placeholder="Your phone number"
+            keyboardType="phone-pad"
           />
         </View>
 
         <View style={styles.formGroup}>
           <Text style={styles.label}>Service Type</Text>
-          <TextInput 
-            style={styles.input} 
-            value={form.service} 
-            onChangeText={(t) => setForm({...form, service: t})} 
-            placeholder="Mobile, Web, Backend, etc." 
+          <TextInput
+            style={styles.input}
+            value={form.service}
+            onChangeText={(t) => setForm({ ...form, service: t })}
+            placeholder="Mobile, Web, Backend, etc."
           />
         </View>
 
         <View style={styles.formGroup}>
           <Text style={styles.label}>Your App Idea *</Text>
-          <TextInput 
-            style={[styles.input, styles.textArea]} 
-            value={form.message} 
-            onChangeText={(t) => setForm({...form, message: t})} 
-            placeholder="Describe your app..." 
-            multiline 
-            numberOfLines={4} 
-            textAlignVertical="top" 
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            value={form.message}
+            onChangeText={(t) => setForm({ ...form, message: t })}
+            placeholder="Describe your app..."
+            multiline
+            numberOfLines={4}
+            textAlignVertical="top"
           />
         </View>
 
+        {/* Custom Timeline Dropdown */}
         <View style={styles.formGroup}>
-          <Text style={styles.label}>Timeline</Text>
-          <TextInput 
-            style={styles.input} 
-            value={form.timeframe} 
-            onChangeText={(t) => setForm({...form, timeframe: t})} 
-            placeholder="When do you need it?" 
-          />
+          <Text style={styles.label}>Preferred Timeline</Text>
+          <TouchableOpacity
+            style={styles.dropdownButton}
+            onPress={() => setDropdownVisible(true)}
+          >
+            <Text style={styles.dropdownButtonText}>{form.timeframe}</Text>
+            <Ionicons name="chevron-down" size={20} color="#111827" />
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity 
-          style={styles.submitButton} 
-          onPress={handleSubmit} 
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleSubmit}
           disabled={loading}
         >
           {loading ? (
@@ -148,33 +164,138 @@ export default function ConsultationScreen({ navigation }) {
           )}
         </TouchableOpacity>
       </View>
+
+      {/* Dropdown Modal */}
+      <Modal
+        visible={dropdownVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setDropdownVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setDropdownVisible(false)}
+        >
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Timeline</Text>
+              <TouchableOpacity onPress={() => setDropdownVisible(false)}>
+                <Ionicons name="close" size={24} color="#111827" />
+              </TouchableOpacity>
+            </View>
+            {timeframeOptions.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.dropdownItem,
+                  form.timeframe === option && styles.dropdownItemSelected,
+                ]}
+                onPress={() => selectTimeframe(option)}
+              >
+                <Text
+                  style={[
+                    styles.dropdownItemText,
+                    form.timeframe === option && styles.dropdownItemTextSelected,
+                  ]}
+                >
+                  {option}
+                </Text>
+                {form.timeframe === option && (
+                  <Ionicons name="checkmark" size={20} color="#d4a853" />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: '#f8f9fa' },
   content: { padding: 20 },
-  card: { backgroundColor: 'white', borderRadius: 20, padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
-  subtitle: { fontSize: 14, color: '#666', marginBottom: 20 },
+  card: { backgroundColor: '#ffffff', borderRadius: 20, padding: 20 },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#111827', marginBottom: 8 },
+  subtitle: { fontSize: 14, color: '#4b5563', marginBottom: 20 },
   formGroup: { marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '600', marginBottom: 6 },
-  input: { 
-    borderWidth: 1, 
-    borderColor: '#ddd', 
-    borderRadius: 10, 
-    padding: 14, 
-    fontSize: 16, 
-    backgroundColor: '#fafafa' 
+  label: { fontSize: 14, fontWeight: '600', color: '#111827', marginBottom: 6 },
+  input: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 10,
+    padding: 14,
+    fontSize: 16,
+    backgroundColor: '#f9fafb',
   },
   textArea: { height: 120 },
-  submitButton: { 
-    backgroundColor: '#4F46E5', 
-    padding: 16, 
-    borderRadius: 12, 
-    alignItems: 'center', 
-    marginTop: 8 
+  dropdownButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 10,
+    padding: 14,
+    backgroundColor: '#f9fafb',
   },
-  submitText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
+  dropdownButtonText: {
+    fontSize: 16,
+    color: '#111827',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    width: '80%',
+    maxHeight: 300,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  dropdownItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  dropdownItemSelected: {
+    backgroundColor: '#f0f0f0',
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: '#111827',
+  },
+  dropdownItemTextSelected: {
+    color: '#d4a853',
+    fontWeight: '600',
+  },
+  submitButton: {
+    backgroundColor: '#d4a853',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  submitText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold' },
 });
