@@ -1,3 +1,4 @@
 ImagineMyApps_backup/
 backend/.env
 .env
+backend/node_modules/
