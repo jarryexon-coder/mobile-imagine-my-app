@@ -34,20 +34,41 @@ tmp/
 temp/
 *.tmp
 
-# Large images (if any)
+# Large files
 *.psd
 *.ai
 *.raw
+*.mp4
+*.mov
+*.avi
 
-# Documentation
+# Backup
+*.backup
+ImagineMyApps_backup/
+
+# Sensitive
+.env
+.env.local
+*.secret
+*.key
+*.pem
+
+# Documentation (keep only essential)
 docs/
 *.md
-LICENSE
 AGENTS.md
 CLAUDE.md
+LICENSE
+README.md
 
-# Mobile app source
-src/screens/
+# Backend
+backend/
+backend/node_modules/
+backend/.env
 
-# Assets (large images)
-assets/
+# Mobile app source (keep only what's needed)
+# Exclude large images if they are not needed for the build
+assets/videos/
+assets/images/case-studies/
+assets/images/portfolio-covers/
+# But keep the app icon
