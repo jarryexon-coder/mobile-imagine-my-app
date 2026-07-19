@@ -11,7 +11,7 @@
       "distribution": "internal"
     },
     "production": {
-      "distribution": "app-store",
+      "distribution": "store",
       "ios": {
         "buildConfiguration": "Release",
         "simulator": false,
