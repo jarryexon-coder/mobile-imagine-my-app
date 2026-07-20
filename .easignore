@@ -72,3 +72,7 @@ assets/videos/
 assets/images/case-studies/
 assets/images/portfolio-covers/
 # But keep the app icon
+/ios
+/android
+/ios
+/android

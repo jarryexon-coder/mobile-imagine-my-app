@@ -1,7 +1,4 @@
 {
-  "cli": {
-    "requireCommit": true
-  },
   "build": {
     "development": {
       "developmentClient": true,
@@ -16,6 +13,17 @@
         "buildConfiguration": "Release",
         "simulator": false,
         "image": "latest"
+      },
+      "env": {
+        "EXPO_NO_WAIT": "true"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "jerry.exon@yahoo.com",
+        "ascAppId": "6792601415"
       }
     }
   }
