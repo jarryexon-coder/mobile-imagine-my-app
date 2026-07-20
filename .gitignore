@@ -8,3 +8,8 @@ backend/node_modules/
 .expo-shared/
 .expo/
 .expo-shared/
+.expo/
+.expo-shared/
+.expo/
+.expo-shared/
+ios/Podfile
