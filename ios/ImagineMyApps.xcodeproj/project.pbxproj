@@ -24,7 +24,7 @@
 		824BDA90C6BA2DF3E18C90DE /* Pods-ImagineMyApps.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImagineMyApps.debug.xcconfig"; path = "Target Support Files/Pods-ImagineMyApps/Pods-ImagineMyApps.debug.xcconfig"; sourceTree = "<group>"; };
 		A4EEE0A3D1B9BB0117F224A5 /* Pods-ImagineMyApps.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImagineMyApps.release.xcconfig"; path = "Target Support Files/Pods-ImagineMyApps/Pods-ImagineMyApps.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = ImagineMyApps/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B4BCAB085283C2381C20FFE6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ImagineMyApps/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		B4BCAB085283C2381C20FFE6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = ImagineMyApps/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B5C165D67A074ABBF44C7DFD /* libPods-ImagineMyApps.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ImagineMyApps.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -120,7 +120,6 @@
 				824BDA90C6BA2DF3E18C90DE /* Pods-ImagineMyApps.debug.xcconfig */,
 				A4EEE0A3D1B9BB0117F224A5 /* Pods-ImagineMyApps.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -349,6 +348,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ImagineMyApps/ImagineMyApps.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CJN67XCKFR;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -386,6 +386,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ImagineMyApps/ImagineMyApps.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CJN67XCKFR;
 				INFOPLIST_FILE = ImagineMyApps/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
