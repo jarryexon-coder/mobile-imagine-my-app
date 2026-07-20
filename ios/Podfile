@@ -1,27 +1,57 @@
+source 'https://cdn.cocoapods.org/'
+
 platform :ios, '15.0'
 
 target 'ImagineMyApps' do
   use_frameworks! :linkage => :static
 
   # React Native
-  config = use_native_modules!
-
-  # Flags change depending on the env values.
-  flags = get_default_flags()
-
-  use_react_native!(
-    :path => config[:reactNativePath],
-    :hermes_enabled => flags[:hermes_enabled] || true,
-    :fabric_enabled => flags[:fabric_enabled] || false,
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
-  )
+  pod 'React-Core', :path => '../node_modules/react-native'
+  pod 'React-Core/DevSupport', :path => '../node_modules/react-native'
+  pod 'React-RCTActionSheet', :path => '../node_modules/react-native/Libraries/ActionSheetIOS'
+  pod 'React-RCTAnimation', :path => '../node_modules/react-native/Libraries/NativeAnimation'
+  pod 'React-RCTBlob', :path => '../node_modules/react-native/Libraries/Blob'
+  pod 'React-RCTImage', :path => '../node_modules/react-native/Libraries/Image'
+  pod 'React-RCTLinking', :path => '../node_modules/react-native/Libraries/Linking'
+  pod 'React-RCTNetwork', :path => '../node_modules/react-native/Libraries/Network'
+  pod 'React-RCTSettings', :path => '../node_modules/react-native/Libraries/Settings'
+  pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text'
+  pod 'React-RCTVibration', :path => '../node_modules/react-native/Libraries/Vibration'
+  pod 'React-Core/RCTWebSocket', :path => '../node_modules/react-native'
+  pod 'React-callinvoker', :path => '../node_modules/react-native/ReactCommon/callinvoker'
+  pod 'React-runtimeexecutor', :path => '../node_modules/react-native/ReactCommon/runtimeexecutor'
+  pod 'React-jsinspector', :path => '../node_modules/react-native/ReactCommon/jsinspector-modern'
+  pod 'React-jsiexecutor', :path => '../node_modules/react-native/ReactCommon/jsiexecutor'
+  pod 'ReactCommon', :path => '../node_modules/react-native/ReactCommon'
+  pod 'React-logger', :path => '../node_modules/react-native/ReactCommon/logger'
+  pod 'React-Fabric', :path => '../node_modules/react-native/ReactCommon'
+  pod 'React-graphics', :path => '../node_modules/react-native/ReactCommon/react/renderer/graphics'
+  pod 'React-rncore', :path => '../node_modules/react-native/ReactCommon'
+  pod 'React-NativeModulesApple', :path => '../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios'
+  pod 'ReactCodegen', :path => '../node_modules/react-native/packages/react-native-codegen'
+  pod 'React-utils', :path => '../node_modules/react-native/ReactCommon/react/utils'
+  pod 'React-debug', :path => '../node_modules/react-native/ReactCommon/react/debug'
+  pod 'React-FabricImage', :path => '../node_modules/react-native/ReactCommon/react/renderer/image'
+  pod 'React-ImageManager', :path => '../node_modules/react-native/ReactCommon/react/renderer/imagemanager'
+  pod 'React-Mapbuffer', :path => '../node_modules/react-native/ReactCommon'
+  pod 'React-rendererdebug', :path => '../node_modules/react-native/ReactCommon/react/renderer/debug'
+  pod 'React-rnappcore', :path => '../node_modules/react-native/ReactCommon'
+  pod 'React-runtime', :path => '../node_modules/react-native/ReactCommon/runtime'
+  pod 'React-runtimescheduler', :path => '../node_modules/react-native/ReactCommon/runtimescheduler'
+  pod 'React-rendererconsistency', :path => '../node_modules/react-native/ReactCommon/react/renderer/consistency'
 
   # Expo modules
-  use_expo_modules!
+  pod 'ExpoModulesCore', :path => '../node_modules/expo-modules-core/ExpoModulesCore.podspec'
+  pod 'EXConstants', :path => '../node_modules/expo-constants/ios'
+  pod 'EXFont', :path => '../node_modules/expo-font/ios'
+  pod 'EXFileSystem', :path => '../node_modules/expo/node_modules/expo-file-system/ios'
+  pod 'Expo', :path => '../node_modules/expo/ios'
 
-  # Post install
   post_install do |installer|
-    react_native_post_install(installer)
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      end
+    end
   end
 end
