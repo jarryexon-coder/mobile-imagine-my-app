@@ -1,30 +1,7 @@
 {
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
-      "distribution": "internal"
-    },
     "production": {
-      "distribution": "store",
-      "ios": {
-        "buildConfiguration": "Release",
-        "simulator": false,
-        "image": "latest"
-      },
-      "env": {
-        "EXPO_NO_WAIT": "true"
-      }
-    }
-  },
-  "submit": {
-    "production": {
-      "ios": {
-        "appleId": "jerry.exon@yahoo.com",
-        "ascAppId": "6792601415"
-      }
+      "distribution": "store"
     }
   }
 }
