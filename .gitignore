@@ -13,3 +13,5 @@ backend/node_modules/
 .expo/
 .expo-shared/
 ios/Podfile
+node_modules/
+node_modules/
